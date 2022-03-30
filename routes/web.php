@@ -315,6 +315,13 @@ Route::middleware('auth')->group(function () {
         
 
             Route::resource('penerimaan', 'PenerimaanController');
+            Route::resource('MstKaryawan', 'MstKaryawanController');
+            Route::resource('MstLokasi', 'MstLokasiController');
+            Route::resource('Absensi', 'AbsensiController');
+            Route::get('Absensi/detail/{id}', 'AbsensiController@detailAbsensi')->name('absensi.detail');;
+            Route::get('Absensi/detail/{id}/export/{daterange}', 'AbsensiController@exportDetailAbsensi')->name('export.detailAbsensi');;
+            Route::get('Absensi/export/{daterange}','AbsensiController@exportAbsensi')->name('export.absensi');
+            Route::resource('jam', 'JamController');
 
             Route::get('hrd/penerimaan/{penerimaan}', 'PenerimaanController@edit')->name('penerimaan.edit');
             Route::get('hrd/penerimaan/{penerimaan}', 'PenerimaanController@statuscompleted')->name('penerimaan.statuscompleted');

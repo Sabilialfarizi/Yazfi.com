@@ -38,8 +38,8 @@
                             <span class="custom-badge status-blue">{{ $role->name }}</span>
                             @endforeach
                         </th>
-                        <th>{{ $user->jabatan->nama }}</th>
-                        <th>{{ $user->perusahaan->nama_perusahaan }}</th>
+                        <th>{{ $user->nama }}</th>
+                        <th>{{ $user->nama_perusahaan }}</th>
                         <th>
                             <a href="{{ route('hrd.users.edit', $user->id) }}" class="btn btn-sm btn-info"><i class="fa fa-edit"></i></a>
                             <form action="{{ route('hrd.users.destroy', $user->id) }}" method="post" style="display: inline;" class="delete-form">

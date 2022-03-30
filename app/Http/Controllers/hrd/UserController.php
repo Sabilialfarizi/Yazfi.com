@@ -17,7 +17,12 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::orderBy('id','desc')->get();
+        $users = User::leftJoin('karyawan','users.id','=','karyawan.users_id')
+        ->leftJoin('perusahaans','karyawan.id_perusahaan','=','perusahaans.id')
+        ->leftJoin('jabatans','karyawan.jabatan_id','=','jabatans.id')
+        ->select('jabatans.nama','perusahaans.nama_perusahaan')
+        ->orderBy('karyawan.id','desc')->get();
+        dd($users);
 
         return view('hrd.users.index', compact('users'));
     }
@@ -48,11 +53,26 @@ class UserController extends Controller
         $imageUrl = $image->storeAs('images/users', \Str::random(15) . '.' . $image->extension());
         $attr['image'] = $imageUrl;
         $attr['is_active'] = 1;
-        $attr['password'] = Hash::make($request->password);
-
+        $attr['password'] = Hash::make($request->password);  
         $user = User::create($attr);
-
         $user->assignRole($request->input('role'));
+        
+        DB::table('karyawan')->insert([
+            'users_id'      => User::all()->last()->id,
+            'name'          => $request->name,
+            'nip'           => $request->nip,
+            'no_ktp'           => $request->no_ktp,
+            'telp'          => $request->phone_number,
+            'id_agamas'     => $request->id_agamas,
+            'jabatan_id'    => $request->id_jabatans,
+            'jenis_kelamin' => $request->jk,
+            'id_pernikahan' => $request->id_pernikahan,
+            'id_perusahaan' => $request->id_perusahaan,
+            'tgl_lahir'     => $request->tgl_lahir,
+            'tgl_masuk'     => $request->created_at,
+            
+          ]);
+
 
         return redirect()->route('hrd.users.index')->with('success', 'User has been added');
     }

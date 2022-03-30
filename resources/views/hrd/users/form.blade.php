@@ -22,13 +22,13 @@
                         <ul class="list-unstyled">
                             <li>
                                 <div class="form-group">
-                                    <label for="nik">Nik Pegawai</label>
-                                    <input type="text" name="nik" id="nik"  value="{{ $nourut }}" required=""
+                                    <label for="nik">NIP</label>
+                                    <input type="text" name="nip" id="nip" value="{{ $nourut }}" required=""
                                         class="form-control">
 
-                                        @error('nik')
-                                        <small class="text-danger">{{ $message }}</small>
-                                        @enderror
+                                    @error('nik')
+                                    <small class="text-danger">{{ $message }}</small>
+                                    @enderror
                                 </div>
                             </li>
                         </ul>
@@ -149,7 +149,51 @@
                             </li>
                         </ul>
                     </div>
-                   
+                    <div class="col-sm-6 col-sg-4 m-b-4">
+                        <ul class="list-unstyled">
+                            <li>
+                                <div class="form-group">
+                                    <label class="form-control-label" for="jk">Jenis
+                                        Kelamin<span class="small text-danger">*</span>
+                                    </label>
+                                    <select id="jk" class="form-control" name="jk">
+                                        <option value="M">Pria</option>
+                                        <option value="F">Wanita</option>
+                                    </select>
+
+                                    @error('jk')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-6 col-sg-4 m-b-4">
+                        <ul class="list-unstyled">
+                            <li>
+                                <div class="form-group">
+                                    <label class="form-control-label" for="tgl_lahir">Tanggal
+                                        Lahir<span class="small text-danger">*</span>
+                                    </label>
+                                    <input type="text" id="tgl_lahir" class="form-control datepicker" name="tgl_lahir"
+                                        placeholder="Tanggal Lahir" required="" value="{{old('tgl_lahir')}}">
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-th"></span>
+                                    </div>
+
+                                    @error('tgl_lahir')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+
+                            </li>
+                        </ul>
+                    </div>
 
                     <div class="col-sm-6 col-sg-4 m-b-4">
                         <ul class="list-unstyled">
@@ -235,28 +279,6 @@
                         </ul>
                     </div>
 
-                    {{-- <div class="col-sm-6 col-sg-4 m-b-4">
-                        <ul class="list-unstyled">
-                            <li>
-
-                                <div class="form-group">
-                                    <label for="cabang">Project</label>
-                                    <!-- <input type="text" name="cabang_id" id="nama_project" class="form-control" readonly> -->
-                                    <select name="cabang_id" id="nama_project" class="form-control root1">
-                                        <option disabled selected>-- Select Projects --</option>
-                                        @foreach($projects as $project)
-                                        <option required=""
-                                            {{ $user->cabang_id == $project->id_perusahaan ? 'selected' : '' }}
-                                            value="{{ $project->id_perusahaan }}">{{ $project->nama_project }} </option>
-                                        @endforeach
-                                    </select>
-                                    @error('cabang_id')
-                                    <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-                            </li>
-                        </ul>
-                    </div> --}}
 
                     <div class="col-sm-6 col-sg-4 m-b-4">
                         <ul class="list-unstyled">
