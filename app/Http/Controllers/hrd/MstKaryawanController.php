@@ -5,13 +5,15 @@ namespace App\Http\Controllers\hrd;
 
 use App\Http\Controllers\Controller;
 
+use App\Http\Requests\UpdateUserRequest;
+use App\{User, Cabang, Jabatan, Perusahaan, Project};
+use App\Http\Requests\StoreUserRequest;
 use Illuminate\Http\Request;
-use App\Models\{mst_karyawan,mst_jabatan,User};
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
-use RealRashid\SweetAlert\Facades\Alert;
-use Illuminate\Support\Facades\Hash; // Import library hash laravel
-use Intervention\Image\Facades\Image;
 
 class MstKaryawanController extends Controller
 {
@@ -27,118 +29,99 @@ class MstKaryawanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        //
-          $this->validate($request, [
-            'limit' => 'integer',
-        ]);
+        $users = User::leftJoin('karyawan','users.id','=','karyawan.users_id')
+        ->leftJoin('perusahaans','karyawan.id_perusahaan','=','perusahaans.id')
+        ->leftJoin('jabatans','karyawan.jabatan_id','=','jabatans.id')
+        ->select('jabatans.nama','perusahaans.nama_perusahaan','karyawan.name','users.email','users.id')
+        ->orderBy('karyawan.id','desc')->get();
+        // dd($users);
 
-        //$employees = MstEmployee::orderBy('name')->paginate(8);
-
-        $employees = DB::table('karyawan as a')
-        ->join('jabatan as b','b.id','=','a.jabatan_id')
-        ->select('a.*','b.jabatan')
-        ->when($request->keyword, function ($query) use ($request) {
-            $query->where('nik', 'like', "%{$request->keyword}%") // search by nik
-            ->orWhere('nama', 'like', "%{$request->keyword}%"); // or by name
-        })->paginate($request->limit ? $request->limit : 20);
-
-        $employees->appends($request->only('keyword'));
-
-        return view('mst_karyawan.index', compact('employees'));
+        return view('hrd.users.index', compact('users'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        //
-              //generate code 
-              $today = date("Ymd");
-              // Get the last created nik
-              $lastNik = mst_karyawan::orderBy('nik', 'desc')->first();
-              if (!$lastNik)
-              $number = 0;
-              else
-              $number = substr($lastNik->nik, 8);
-      
-             $this->data['nik'] = $lastTrx = $today . sprintf('%02d', intval($number) + 1);
-      
-              $this->data['jabatan'] = mst_jabatan::SelectBox();
-              return view('mst_karyawan.create', $this->data);
+        $roles = Role::get();
+        $user = new User();
+        $perusahaans = Perusahaan::get();
+        $jabatans = Jabatan::get();
+        $projects = Project::get();
+        $perkawinans = DB::table('status_pernikahans')->get();
+        $agamas = DB::table('agamas')->get();
+        $jk = DB::table('jenis_kelamin')->get();
+        // dd($jk);
+
+        $noUrutAkhir = \App\User::max('id');
+        // dd($noUrutAkhir);
+        $nourut =   sprintf("%02s", abs($noUrutAkhir + 1))  . sprintf("%05s", abs($noUrutAkhir + 1));
+
+        return view('hrd.users.create', compact('roles', 'nourut','user', 'jabatans', 'perusahaans', 'projects','perkawinans','agamas','jk'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $req)
+    public function store(Request $request)
     {
-        //
-      
-        $req->validate([
-            'nik' => ['required', 'string', 'unique:karyawan', 'max:12'],
-            'nama' => ['required', 'string', 'max:100'],
-            'email' => ['required', 'string', 'unique:users'],
-            'jk' => ['required', 'string'],
-            'no_telp' => ['required', 'string'],
-            'alamat' => ['required', 'string'],
-            'jabatan_id' => ['required', 'string'],
-            'tgl_lahir' => ['required', 'string'],
-        ]);
-        DB::table('users')->insert([
-            'name'     => $req->nama,
-            'email'    => $req->email,
-            'foto'     => $req->foto,
-            'password' => Hash::make($req->password),
-            'is_admin' => $req->role_id
+        // dd($request->all());
+        $image = $request->file('image');
+        $imageUrl = $image->storeAs('images/users', \Str::random(15) . '.' . $image->extension());
+
+       $attr = DB::table('users')->insert([
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'image'     => $imageUrl,
+            'password' => Hash::make($request->password),
+            'is_active' => 1,
+            'phone_number' =>$request->telp,
+            'assignRole' => $request->input('role')
           ]);
-       
-          DB::table('karyawan')->insert([
+        //   dd($attr);
+
+        //   $user = User::select('id')->get($attr);
+        //   $user->assignRole($request->input('role'));
+         
+        
+        DB::table('karyawan')->insert([
             'users_id'      => User::all()->last()->id,
-            'nama'          => $req->nama,
-            'nik'           => $req->nik,
-            'telp'          => $req->no_telp,
-            'jabatan_id'    => $req->jabatan_id,
-            'jenis_kelamin' => $req->jk,
-            'alamat'        => $req->alamat,
-            'tgl_lahir'        => $req->tgl_lahir
+            'name'          => $request->name,
+            'nip'           => $request->nip,
+            'no_ktp'         => $request->no_ktp,
+            'telp'          => $request->phone_number,
+            'id_agamas'     => $request->id_agamas,
+            'jabatan_id'    => $request->id_jabatans,
+            'jenis_kelamin' => $request->jk,
+            'id_pernikahan' => $request->id_pernikahan,
+            'id_perusahaan' => $request->id_perusahaan,
+            'tgl_lahir'     => $request->tgl_lahir,
+            'tgl_masuk'     => $request->created_at,
+            
           ]);
 
-        Alert::success('Success', 'Data berhasil ditambahkan');
-        return redirect()->route('MstKaryawan.index');
+        return redirect()->route('hrd.users.index')->with('success', 'User has been added');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function edit(User $user)
     {
-        //
-        $this->data['karyawan'] = mst_karyawan::where('users_id',$id)->first();
-        $this->data['user'] = User::findOrFail($id);
-        $this->data['jabatan'] = mst_jabatan::SelectBox();
-        return view('mst_karyawan.edit', $this->data);
+        $roles = Role::get();
+        $perusahaans = Perusahaan::get();
+        $jabatans = Jabatan::get();
+        $projects = Project::get();
+        $perkawinans = DB::table('status_pernikahans')->get();
+        $agamas = DB::table('agamas')->get();
+        $jk = DB::table('jenis_kelamin')->get();
+
+        $noUrutAkhir = \App\User::max('id');
+        // dd($noUrutAkhir);
+        $nourut =   sprintf("%02s", abs($noUrutAkhir + 1))  . sprintf("%05s", abs($noUrutAkhir + 1));
+        
+
+        $users = User::leftJoin('karyawan','users.id','=','karyawan.users_id')
+        ->whereIn('users.id',$user)
+        ->get();
+        // dd($users);
+
+        return view('hrd.users.edit', compact('user', 'roles','nourut', 'perusahaans', 'jabatans', 'projects','perkawinans','agamas','jk'));
     }
 
     /**
@@ -148,104 +131,44 @@ class MstKaryawanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        //
-        // dd($request->all());    
-
-        $request->validate([
-            // 'nik' => ['required', 'string', 'unique:karyawan', 'max:11'],
-            'nama' => ['required', 'string', 'max:100'],
-            'email' => ['required', 'string'],
-            'jk' => ['required', 'string'],
-            'no_telp' => ['required', 'string'],
-            'alamat' => ['required', 'string'],
-            'jabatan_id' => ['required', 'string'],
-            'role_id' => ['required', 'string'],
-            'tgl_lahir' => ['required', 'string']
-        ]);
-        $karyawan =   DB::table('karyawan')
-        ->where('users_id',$id)->first();
-        $users =   DB::table('users')
-        ->where('id',$id)->first();
-          
-        if ($request->password!= null ) {
-            DB::table('users')->where('id',$id)
-        ->update([
-            'name'     => $request->nama,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
-            'is_admin' => $request->role_id
-          ]);
+        $attr = $request->all();
+        if ($request->input('password') == null) {
+            $attr['password'] = $user->password;
         } else {
-            DB::table('users')->where('id',$id)
-        ->update([
-            'name'     => $request->nama,
-            'email'    => $request->email,
-            // 'password' => Hash::make($request->password),
-            'is_admin' => $request->role_id
-          ]);
+            $attr['password'] =  Hash::make($request->password);
         }
-       
-            DB::table('karyawan')
-            ->where('users_id',$id)->update([
-              'nama'          => $request->nama,
-              'telp'          => $request->no_telp,
-              'jabatan_id'    => $request->jabatan_id,
-              'jenis_kelamin' => $request->jk,
-              'alamat'        => $request->alamat,
-              'tgl_lahir'        => $request->tgl_lahir
-            ]); 
-          
-  
-        Alert::success('Success', 'Data berhasil diUbah!');
-        return redirect()->route('MstKaryawan.index');
+
+        $image = $request->file('image');
+
+        if ($request->file('image')) {
+            Storage::delete($user->image);
+            $imageUrl = $image->storeAs('images/users', \Str::random(15) . '.' . $image->extension());
+            $attr['image'] = $imageUrl;
+        } else {
+            $attr['image'] = $user->image;
+        }
+
+        $user->update($attr);
+        $user->syncRoles($request->input('role'));
+
+        return redirect()->route('hrd.users.index')->with('success', 'User has been updated');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
-        // dd($id);
-        User::findOrFail($id)->delete();
-        mst_karyawan::where('users_id',$id)->delete();
-        Alert::success('Success', 'Data berhasil dihapus');
-        return redirect()->route('MstKaryawan.index');
+        $user->delete();
+        return redirect()->route('hrd.users.index')->with('success', 'User has been deleted');
     }
-
-    
-       // Function handle request
-       private function handleRequest($req)
-       {
-           $data = $req->all();
-   
-           // jika field foto ada
-           if ($req->hasFile('foto'))
-           {
-               $image       = $req->file('foto');
-               $fileName    = date('YmdHis_').$image->getClientOriginalName();
-               $destination = $this->uploadPath;
-               // simpan foto pada direktori img
-               Image:: make($image)->save($destination . '/' . $fileName);
-               $data['foto'] = $fileName;
-           }else{
-            $data['foto'] = null;
-           }
-           return $data;
-       }
-   
-       // Fungsi untuk mengapus foto yang tersimpan di applikasi
-       private function removeImage($image)
-       {
-           if ( ! empty($image) )
-           {
-               $imagePath = $this->uploadPath.'/'. $image;
-               if ( file_exists($imagePath) ) unlink($imagePath);
-           }
-       }
+    public function whereProject(Request $request)
+    {
+        $data = DB::table('perusahaans')
+            ->leftJoin('projects', 'perusahaans.id', '=', 'projects.id_perusahaan')
+            ->select('projects.nama_project')
+            ->groupBy('projects.nama_project')
+            ->where('perusahaans.id', $request->id)->get();
+        return $data;
+        dd($data);
+    }
 }

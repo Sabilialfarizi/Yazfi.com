@@ -355,7 +355,7 @@ Route::middleware('auth')->group(function () {
 
 
             // Route Master User
-            Route::resource('users', 'UserController');
+            Route::resource('users', 'MstKaryawanController');
 
             // Route Master Cabang
             Route::get('cabang/{cabang:id}/ruangan', 'CabangController@ruangan');

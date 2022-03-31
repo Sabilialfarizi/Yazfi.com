@@ -22,6 +22,7 @@
         "nicolaslopezj/searchable": "^1.13",
         "realrashid/sweet-alert": "^5.0",
         "spatie/laravel-permission": "^4.2",
+        "tymon/jwt-auth": "^1.0",
         "yajra/laravel-datatables-oracle": "^9.18"
     },
     "require-dev": {

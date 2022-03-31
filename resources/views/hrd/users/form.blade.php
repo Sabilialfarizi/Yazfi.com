@@ -97,7 +97,7 @@
                                         @endforeach
                                     </select>
 
-                                    @error('id_agama')
+                                    @error('id_agamas')
                                     <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </div>
@@ -157,8 +157,12 @@
                                         Kelamin<span class="small text-danger">*</span>
                                     </label>
                                     <select id="jk" class="form-control" name="jk">
-                                        <option value="M">Pria</option>
-                                        <option value="F">Wanita</option>
+                                        <option disabled selected>-- Select Jenis Kelamin --</option>
+                                        @foreach($jk as $jk_kelamin)
+                                        <option {{ $user->jenis_kelamin == $jk_kelamin->key_gender ? 'selected' : '' }}
+                                            value="{{ $jk_kelamin->key_gender }}">
+                                            {{ $jk_kelamin->name }}</option>
+                                        @endforeach
                                     </select>
 
                                     @error('jk')
@@ -178,7 +182,7 @@
                                     <label class="form-control-label" for="tgl_lahir">Tanggal
                                         Lahir<span class="small text-danger">*</span>
                                     </label>
-                                    <input type="text" id="tgl_lahir" class="form-control datepicker" name="tgl_lahir"
+                                    <input type="date" id="tgl_lahir" class="form-control" name="tgl_lahir"
                                         placeholder="Tanggal Lahir" required="" value="{{old('tgl_lahir')}}">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-th"></span>
