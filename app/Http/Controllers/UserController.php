@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Support\Facades\DB;
 use Auth;
@@ -44,13 +44,13 @@ class UserController extends Controller
          }
          $email = Auth::user()->email;
          $user  = DB::table('karyawan')
-         ->leftJoin('jabatan','karyawan.jabatan_id','=','jabatan.id')
+         ->leftJoin('roles','karyawan.jabatan_id','=','roles.id')
          ->leftJoin('users','karyawan.users_id','=','users.id')
          ->select('karyawan.id','karyawan.nama','karyawan.nik',
          'karyawan.jenis_kelamin as jenis_kelamin',
          'karyawan.tgl_lahir as tgl_lahir',
          'users.email as email',
-         'karyawan.telp','jabatan.jabatan as jabatan')
+         'karyawan.telp','roles.key as roles')
          ->where('users.email','=',$email)
          ->first();
          $response = [
@@ -138,12 +138,12 @@ class UserController extends Controller
 
           // Find the user by email
           $user = DB::table('karyawan')
-          ->leftJoin('jabatan','karyawan.jabatan_id','=','jabatan.id')
+          ->leftJoin('roles','karyawan.jabatan_id','=','roles.id')
           ->leftJoin('users','karyawan.users_id','=','users.id')
-          ->select('karyawan.id','karyawan.nama','karyawan.nik',
+          ->select('karyawan.id','karyawan.name','karyawan.nip',
           'karyawan.tgl_lahir as tgl_lahir',
           'users.email as email'
-          ,'karyawan.jenis_kelamin as jenis_kelamin','karyawan.telp','jabatan.jabatan as jabatan')
+          ,'karyawan.jenis_kelamin as jenis_kelamin','karyawan.telp','roles.key as jabatan')
           ->where('users.email','=',$request->get('email'))
           ->first();
 
