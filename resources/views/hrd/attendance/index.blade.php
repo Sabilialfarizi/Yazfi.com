@@ -2,240 +2,134 @@
 
 @section('content')
 <div class="row">
-    <div class="col-sm-12">
-        <h4 class="page-title">Attendance Sheet</h4>
-    </div>
-</div>
-
-<form action="{{ route('admin.attendance.search') }}" method="GET" id="TheSubmitFormForFilterAttendance">
-    <div class="row filter-row">
-        <div class="col-sm-6 col-md-6">
-            <div class="form-group form-focus">
-                <label class="focus-label">Employee Name</label>
-                @csrf
-                <input type="text" value="{{ old('pegawai') }}" class="form-control floating" name="pegawai">
-            </div>
-        </div>
-        <div class="col-sm-6 col-md-3">
-            <div class="form-group form-focus select-focus">
-                <label class="focus-label">Select Month</label>
-                <select class="select floating" name="month" onchange="TheSubmitFormForFilterAttendance()">
-                    <option value="">-</option>
-                    <option @if($month == "01") selected @endif value="01">Jan</option>
-                    <option @if($month == "02") selected @endif value="02">Feb</option>
-                    <option @if($month == "03") selected @endif value="03">Mar</option>
-                    <option @if($month == "04") selected @endif value="04">Apr</option>
-                    <option @if($month == "05") selected @endif value="05">May</option>
-                    <option @if($month == "06") selected @endif value="06">Jun</option>
-                    <option @if($month == "07") selected @endif value="07">Jul</option>
-                    <option @if($month == "08") selected @endif value="08">Aug</option>
-                    <option @if($month == "09") selected @endif value="09">Sep</option>
-                    <option @if($month == "10") selected @endif value="10">Oct</option>
-                    <option @if($month == "11") selected @endif value="11">Nov</option>
-                    <option @if($month == "12") selected @endif value="12">Dec</option>
-                </select>
-            </div>
-        </div>
-        <div class="col-sm-6 col-md-3">
-            <div class="form-group form-focus select-focus">
-                <label class="focus-label">Select Year</label>
-                <select class="select floating" name="year" onchange="TheSubmitFormForFilterAttendance()">
-                    <option value="">-</option>
-                    <option @if($year == '2023') selected @endif>2023</option>
-                    <option @if($year == '2022') selected @endif>2022</option>
-                    <option @if($year == '2021') selected @endif>2021</option>
-                    <option @if($year == '2020') selected @endif>2020</option>
-                    <option @if($year == '2019') selected @endif>2019</option>
-                    <option @if($year == '2018') selected @endif>2018</option>
-                    <option @if($year == '2017') selected @endif>2017</option>
-                    <option @if($year == '2016') selected @endif>2016</option>
-                    <option @if($year == '2015') selected @endif>2015</option>
-                    <option @if($year == '2014') selected @endif>2014</option>
-                    <option @if($year == '2013') selected @endif>2013</option>
-                </select>
-            </div>
-        </div>
-    </div>
-</form>
-@if($message = Session::get('error'))
-<div class="row">
     <div class="col-md-12">
-        <div class="alert alert-danger">
-            {{ $message }}
-        </div>
-    </div>
-</div>
-@endif
-
-@if($message = Session::get('success'))
-<div class="row">
-    <div class="col-md-12">
-        <div class="alert alert-success">
-            {{ $message }}
-        </div>
-    </div>
-</div>
-@endif
-<div class="row">
-    <div class="col-lg-12">
-        <div class="card shadow">
-            <div class="card-header">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <a href="{{ route('admin.attendance.update_user', [$month,$year]) }}" class="btn btn-info text-light btn-block" id="tombol-hapus" value="delete">Update User {{ $year }} {{ $month }}</a>
-                    </div>
-                    <div>
-                        <h2><span class="badge badge-success">{{ $year }}-{{ $month }}-{{ $day }}</span></h2>
-                    </div>
-                </div>
+        <div class="card">
+            <div class="card-header d-flex flex-row justify-content-between">
+                <a href="{{ url()->previous() }}" class="btn btn-sm btn-info">Back</a>
             </div>
             <div class="card-body">
+                <form action="{{ route('hrd.attendance.laporan') }}" method="post">
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <input type="month" name="month" value="{{ $month ?? '' }}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </form>
                 <div class="table-responsive">
-                    <table class="table border table-bordered table-hover">
-                        <tr class="text-center bg-success">
-                            <th colspan="{{ 3 + $day }}">
-                                <h5 class="text-light">Attendance - {{ $year }} {{ $month }}</h5>
-                            </th>
-                        </tr>
-                        <tr class="text-center bg-info">
-                            <th class="text-light">#</th>
-                            <th class="text-light">Pegawai</th>
-                            <th class="text-light">Role</th>
-                            @for($i = 1;$i <= $day;$i++) <th class="text-light">{{ $i }}</th> @endfor
-                        </tr>
-                        @forelse($user as $data)
-                        <tr class="text-center">
-                            <td>{{ $data->id }}</td>
-                            <td><button type="button" id="{{ $data->id }}" year="{{ $year }}" month="{{ $month }}" class="btn btn-outline-primary button-show" data-toggle="modal" data-target=".bd-example-modal-lg">{{ $data->name }}</button></td>
-                            <td>
-                                <ul class="list-unstyled">
-                                    @foreach($data->roles as $role)
-                                    <li>{{ $role->name }}</li>
-                                    @endforeach
-                                </ul>
-                            </td>
-                            @for($i = 1; $i <= $day; $i++) <td>
-                                @foreach($data->jadwal as $row)
-                                    @if(Carbon\Carbon::parse($row->tanggal)->format('Y') == $year)
-                                        @if(Carbon\Carbon::parse($row->tanggal)->format('m') == $month)
-                                            @if(Carbon\Carbon::parse($row->tanggal)->format('d') == $i)
-                                                @if($row->shift->kode == 'SF1'|| $row->shift->kode == 'SF2')
-                                                <i class="fa fa-check text-success">{{ $row->shift->kode }}</i>
-                                                @else
-                                                    @if($row->shift->kode == 'L')
-                                                    <i class="fa fa-close text-danger">{{ $row->shift->kode }}</i>
-                                                    @else
-                                                    <i class="fa fa-info text-warning">{{ $row->shift->kode }}</i>
-                                                    @endif
-                                                @endif
-                                            @endif
+                    <table class="table table-striped table-bordered" id="datatable">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Nama</th>
+                                @for($i = 0; $i < Carbon\Carbon::parse($month)->endOfMonth()->format('d');$i++)
+                                    <th>{{ Carbon\Carbon::parse($month)->startOfMonth()->addDay($i)->format('d') }}</th>
+                                    @endfor
+                                <th>terlambat</th>
+                               <th>absen</th>
+                            </tr>
+                        </thead>
+                        @php
+                        $array_absen = [];
+                        $array_telat = [];
+                        @endphp
+                        <tbody>
+                            @foreach($user as $pegawai)
+                            @php
+                            $absen = 0;
+                            $telat = 0;
+                            @endphp
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <th>{{ $pegawai->name }}
+                                </th>
+                                
+                                @for($i = 0 ;$i < Carbon\Carbon::parse($month)->endOfMonth()->format('d');$i++)
+                                    <td>{{ $pegawai->absensi->where('tanggal', Carbon\Carbon::parse($month)->startOfMonth()->addDay($i)->format('Y-m-d'))->first()->jam_masuk ?? '' }}
+                                        <br>
+                                        {{ $pegawai->absensi->where('tanggal', Carbon\Carbon::parse($month)->startOfMonth()->addDay($i)->format('Y-m-d'))->first()->jam_keluar ?? '' }}
+                                        {{-- @foreach($holiday as $list)
+                                        @if(Carbon\Carbon::parse($list->holiday_date)->format('d') == $i)
+                                        <span style="color: red;">{{ $list->title }}</span>
                                         @endif
-                                    @endif
-                                @endforeach
-                                @foreach($holiday as $list)
-                                @if(Carbon\Carbon::parse($list->holiday_date)->format('d') == $i)
-                                <span style="color: red;">{{ $list->title }}</span>
-                                @endif
-                                @endforeach
-                                </td>
-                            @endfor
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="40">
-                                <div class="alert alert-warning text-center">Data Kosong</div>
-                            </td>
-                        </tr>
-                        @endforelse
+                                        @endforeach --}}
+                                    </td>
+                                    @php
+                                    if($pegawai->absensi->where('tanggal', Carbon\Carbon::parse($month)->startOfMonth()->addDay($i)->format('Y-m-d'))->first()->jam_masuk ?? false){
+                                    $absen += 1;
+                                    }
+                                    if($pegawai->absensi->where('tanggal', Carbon\Carbon::parse($month)->startOfMonth()->addDay($i)->format('Y-m-d'))->first()){
+                                    if($pegawai->absensi->where('tanggal', Carbon\Carbon::parse($month)->startOfMonth()->addDay($i)->format('Y-m-d'))->first()->jam_masuk >= \App\Jam::where('kode', 'SF1')->first()->selesai){
+                                    $telat += 1;
+                                    }
+                                    }
+                                    @endphp
+                                    @endfor
+                                    <td>{{ $telat }}</td>
+                                    <td>{{ $absen }}</td>
+                                    @php
+                                    array_push($array_absen, $absen);
+                                    array_push($array_telat, $telat);
+                                    @endphp
+
+                            </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="{{ 2 + Carbon\Carbon::parse($month)->lastOfMonth()->format('d') }}"></td>
+                                <td>{{ array_sum($array_telat) }}</td>
+                                <td>{{ array_sum($array_absen) }}</td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
+@stop
 
-@include('admin.attendance.modal')
-<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+
+@section('footer')
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
 <script>
-    const Year = function()
-    {
-        let start = new Date().getFullYear();
-        for (let i = start; i > start - 10; i--){
-            console.log(i)
-        }
-    }
-    Year()
-    function TheSubmitFormForFilterAttendance(){
-        $('#TheSubmitFormForFilterAttendance').submit()
-    }
-    $('.button-show').click(function() {
-        event.preventDefault()
-        let id = $(this).attr('id');
-        let year = $(this).attr('year')
-        let month = $(this).attr('month')
-        
-        $('#tombol-hapus').attr('year', year);
-        $('#tombol-hapus').attr('month', month);
-        $('#tombol-hapus').attr('dataID', id);
-
-        $.ajax({
-            url: `/admin/attendance/${id}`,
-            success: function(result) {
-                $("#name_user").val(result.name);
-                $("#cabang_id").val(result.cabang_id)
-                $('#cabang').val(result.cabang)
-                $('#ruangan_id').html('')
-                $.each(result.ruangan, function() {
-                    $('#ruangan_id').append(`<option value="${this.id}">${this.nama_ruangan}</option>`)
-                })
+    $('#datatable').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'print',
+            {
+                extend: 'pdfHtml5',
+                orientation: 'landscape',
+                pageSize: 'LEGAL'
             }
-        });
-
-        console.log($('#tombol-hapus-attendance').attr('href', `/admin/attendance/reset/${id}/${year}/${month}`))
-        $('#id').val(id)
-        $('#show-data').modal('show')
-        $('#table-jadwal').DataTable({
-            destroy: true,
-            processing: true,
-            serverSide: true,
-            ajax: ({
-                url: `/admin/attendance/edit/${id}/${year}/${month}`,
-                type: 'get',
-                error: err => {
-                    alert(err)
-                }
-            }),
-            columns: [{
-                    name: "id",
-                    data: "id"
-                },
-                {
-                    name: "tanggal",
-                    data: "tanggal"
-                },
-                {
-                    name: "kode",
-                    data: "kode"
-                },
-                {
-                    name: "cabang",
-                    data: "cabang"
-                },
-                {
-                    name: "ruang",
-                    data: "ruang"
-                },
-                {
-                    data: "SF1"
-                },
-                {
-                    data: "SF2"
-                },
-                {
-                    data: 'L'
-                }
-            ]
-        })
+        ]
     })
+    $('.delete_confirm').click(function(event) {
+        let form = $(this).closest("form");
+        event.preventDefault();
+        swal({
+                title: `Are you sure you want to delete this record?`,
+                text: "If you delete this, it will be gone forever.",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+                    form.submit();
+                }
+            });
+    });
 </script>
 @stop

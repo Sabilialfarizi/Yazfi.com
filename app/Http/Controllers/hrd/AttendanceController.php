@@ -4,6 +4,8 @@ namespace App\Http\Controllers\hrd;
 
 use App\Http\Controllers\Controller;
 use App\{Cabang, Holidays, Jadwal, Ruangan, Shift, User};
+use App\Models\mst_jabatan;
+use App\Models\mst_karyawan;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
@@ -20,21 +22,6 @@ class AttendanceController extends Controller
     private $array = [];
     public function index()
     {
-        $user = User::whereHas('roles', function ($e) {
-            return $e->where('name', 'super-admin');
-        })->orWhereHas('roles', function ($qr) {
-            return $qr->where('name', 'marketing');
-        })->orWhereHas('roles', function ($qr) {
-            return $qr->where('name', 'logistik');
-        })->orWhereHas('roles', function ($qr) {
-            return $qr->where('name', 'supervisor');
-        })->orWhereHas('roles', function ($qr) {
-            return $qr->where('name', 'hrd');
-        })->orWhereHas('roles', function ($qr) {
-            return $qr->where('name', 'finance');
-        })->whereHas('jadwal', function ($q) {
-            return $q->whereMonth('tanggal', Carbon::now()->format('m'))->whereYear('tanggal', Carbon::now()->format('Y'));
-        })->get();
         
         
         $datetime = Carbon::now();
@@ -42,17 +29,19 @@ class AttendanceController extends Controller
         $month = $datetime->format('m');
         $year = $datetime->format('Y');
         $day = $datetime->endOfMonth()->format('d');
+        
 
         return view('hrd.attendance.index', [
-            'user' => $user,
+            'user' => mst_karyawan::get(),
+            'pegawais' => user::get(),
             'user_mode' => User::latest()->get(),
             'holiday' => Holidays::whereMonth('holiday_date', $datetime->format('m'))->whereYear('holiday_date', $datetime->format('Y'))->get(),
-            'cabangs' => Cabang::get(),
-            'ruangans' => Ruangan::get(),
-            'shift' => Shift::pluck('kode'),
+            // 'cabangs' => Cabang::get(),
+            // 'ruangans' => Ruangan::get(),
+            // 'shift' => Shift::pluck('kode'),
             'month' => Carbon::now()->format('Y-m'),
             'year' => $year,
-            'day' => $day
+            // 'day' => $day
         ]);
     }
     /**
@@ -233,7 +222,13 @@ class AttendanceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-
+    public function laporan(Request $request)
+    {
+        return view('admin.absensi.index',[
+            'pegawais' => mst_karyawan::get(),
+            'month' => Carbon::parse($request->month)->format('Y-m')
+         ]);
+    }
     public function show($id)
     {
         $user = User::find($id);

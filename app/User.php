@@ -41,10 +41,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(Cabang::class, 'cabang_id');
     }
 
-    public function jadwal()
-    {
-        return $this->hasMany(Absensi::class);
-    }
+ 
 
     public function customer()
     {

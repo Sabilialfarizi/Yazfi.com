@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class mst_jabatan extends Model
 {
-    use HasFactory;
+    // use HasFactory;
      //
      protected $table    = 'jabatan';
 

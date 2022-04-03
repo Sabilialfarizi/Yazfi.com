@@ -183,7 +183,7 @@ class AbsensiController extends Controller
             $selesai = Carbon::parse($jam->waktu_selesai)->format('H:i:s');
         
         //SF1
-        if ($jamMasuk <= $mulai && $jamMasuk <= $selesai) {
+        if ($jamMasuk <= $mulai && $jamMasuk >= $selesai) {
             $status = 'Tepat Waktu';
             $photo       = $request->file('ft_selfie_in')->getClientOriginalName();
             $photo       = uniqid() . '_' . $photo;
@@ -226,7 +226,7 @@ class AbsensiController extends Controller
                           'lokasi'       => $request->lokasi,
                           'catatan'      => $request->keterangan,
                           'Keterangan'   => $status,
-                          'shift'   => 1,
+                          'shift_id'   => 1,
                           'ft_selfie_in' => $photo]);
                         DB:: commit();
                         $response=[ 'statusCode'=>200,
@@ -240,7 +240,7 @@ class AbsensiController extends Controller
             $selesai = Carbon::parse($jam->waktu_selesai)->format('H:i:s');
         
         //SF2    
-        if ($jamMasuk <= $mulai && $jamMasuk <= $selesai) {
+        if ($jamMasuk <= $mulai && $jamMasuk >= $selesai) {
             $status = 'Tepat Waktu';
             $photo       = $request->file('ft_selfie_in')->getClientOriginalName();
             $photo       = uniqid() . '_' . $photo;
@@ -258,7 +258,7 @@ class AbsensiController extends Controller
                       'lokasi'       => $request->lokasi,
                       'catatan'      => $request->keterangan,
                       'Keterangan'   => $status,
-                      'shift'   => 2,
+                      'shift_id'   => 2,
                       'ft_selfie_in' => $photo]);
                     DB:: commit();
                     $response=[ 'statusCode'=>200,

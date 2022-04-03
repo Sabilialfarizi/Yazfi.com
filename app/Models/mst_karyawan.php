@@ -10,13 +10,8 @@ class mst_karyawan extends Model
     // use HasFactory;
     protected $table    = 'karyawan';
 
-    protected $fillable     =   [ 
-                                'nama',
-                                'nik',
-                                'telp',
-                                'id_user',
-                                'id_jabatan',
-                                'alamat',
-                                'tgl_lahir'
-                                ];  
+    public function absensi()
+     {
+         return $this->hasMany(Absensi::class,'karyawan_id');
+     }
 }

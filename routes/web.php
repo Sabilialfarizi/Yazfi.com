@@ -353,6 +353,7 @@ Route::middleware('auth')->group(function () {
         
 
             Route::resource('attendance', 'AttendanceController');
+            Route::post('attendance/laporan', 'AttendanceController@laporan')->name('attendance.laporan');
 
 
             // Route Master User
