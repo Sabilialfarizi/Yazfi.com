@@ -322,6 +322,7 @@ Route::middleware('auth')->group(function () {
             Route::get('Absensi/detail/{id}/export/{daterange}', 'AbsensiController@exportDetailAbsensi')->name('export.detailAbsensi');;
             Route::get('Absensi/export/{daterange}','AbsensiController@exportAbsensi')->name('export.absensi');
             Route::resource('jam', 'JamController');
+            Route::resource('holidays', 'HolidaysController');
 
             Route::get('hrd/penerimaan/{penerimaan}', 'PenerimaanController@edit')->name('penerimaan.edit');
             Route::get('hrd/penerimaan/{penerimaan}', 'PenerimaanController@statuscompleted')->name('penerimaan.statuscompleted');

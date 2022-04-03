@@ -52,9 +52,12 @@
         <li class="{{ request()->is('hrd/MstLokasi*') ? 'active' : '' }}">
             <a href="{{ route('hrd.MstLokasi.index') }}">
                 <span>Lokasi</span></a></li>
+        <li class="{{ request()->is('hrd/holidays*') ? 'active' : '' }}">
+            <a href="{{ route('hrd.holidays.index') }}">
+                <span>Holidays Date</span></a></li>
         <li class="{{ request()->is('hrd/jam*') ? 'active' : '' }}">
             <a href="{{ route('hrd.jam.index') }}">
-                <span>Jam Masuk Dan Pulang</span></a></li>
+                <span>Jam Shift</span></a></li>
     </ul>
 </li>
 {{-- <li class="{{ request()->is('admin/purchase*') ? 'active' : '' }}">

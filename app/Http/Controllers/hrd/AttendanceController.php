@@ -21,14 +21,21 @@ class AttendanceController extends Controller
     public function index()
     {
         $user = User::whereHas('roles', function ($e) {
-            return $e->where('name', 'dokter');
+            return $e->where('name', 'super-admin');
         })->orWhereHas('roles', function ($qr) {
-            return $qr->where('name', 'perawat');
+            return $qr->where('name', 'marketing');
         })->orWhereHas('roles', function ($qr) {
-            return $qr->where('name', 'office-boy');
+            return $qr->where('name', 'logistik');
+        })->orWhereHas('roles', function ($qr) {
+            return $qr->where('name', 'supervisor');
+        })->orWhereHas('roles', function ($qr) {
+            return $qr->where('name', 'hrd');
+        })->orWhereHas('roles', function ($qr) {
+            return $qr->where('name', 'finance');
         })->whereHas('jadwal', function ($q) {
             return $q->whereMonth('tanggal', Carbon::now()->format('m'))->whereYear('tanggal', Carbon::now()->format('Y'));
         })->get();
+        
         
         $datetime = Carbon::now();
 
@@ -43,7 +50,7 @@ class AttendanceController extends Controller
             'cabangs' => Cabang::get(),
             'ruangans' => Ruangan::get(),
             'shift' => Shift::pluck('kode'),
-            'month' => $month,
+            'month' => Carbon::now()->format('Y-m'),
             'year' => $year,
             'day' => $day
         ]);

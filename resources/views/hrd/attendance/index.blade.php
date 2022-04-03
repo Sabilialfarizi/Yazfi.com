@@ -134,7 +134,7 @@
                                 @endforeach
                                 @foreach($holiday as $list)
                                 @if(Carbon\Carbon::parse($list->holiday_date)->format('d') == $i)
-                                <i class="fa fa-close text-danger">{{ $list->title }}</i>
+                                <span style="color: red;">{{ $list->title }}</span>
                                 @endif
                                 @endforeach
                                 </td>

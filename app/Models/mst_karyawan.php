@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class mst_karyawan extends Model
 {
-    use HasFactory;
+    // use HasFactory;
     protected $table    = 'karyawan';
 
     protected $fillable     =   [ 

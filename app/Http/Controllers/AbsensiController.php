@@ -24,14 +24,17 @@ class AbsensiController extends Controller
         $formatdatestart = Carbon::parse($start)->format($format);
         $end             = Carbon::now()->endOfMonth();
         $formatdateend   = Carbon::parse($end)->format($format);
+        $current = Carbon::now();
+        $current->timezone = 'Asia/Jakarta';
+        $current->check();
         $this->validate($request, [
             'limit' => 'integer',
         ]);
 
         $lists = DB::table('absensi as a')
         ->join('karyawan as b','b.id','=','a.karyawan_id')
-        ->join('jabatan as c','c.id','=','b.jabatan_id')
-        ->select('b.nik','b.nama','c.jabatan','b.id','a.tanggal','a.jam_masuk','a.ft_selfie_in','a.jam_keluar',
+        ->join('roles as c','c.id','=','b.jabatan_id')
+        ->select('b.nip','b.nama','c.jabatan','b.id','a.tanggal','a.jam_masuk','a.ft_selfie_in','a.jam_keluar',
         'a.ft_selfie_out','a.lokasi','a.keterangan')
         ->whereBetween('a.tanggal', [$formatdatestart, $formatdateend])
 
@@ -41,7 +44,10 @@ class AbsensiController extends Controller
 
         $lists->appends($request->only('keyword'));
 
-        return view('absensi.index', compact('lists'));
+        $month = Carbon::now()->format('Y-m');
+      
+
+        return view('admin.attendance.index', compact('lists','month'));
     }
 
     /**
@@ -173,10 +179,11 @@ class AbsensiController extends Controller
             
             $now = Carbon::now();
             $jam = DB::table('shifts')->where('kode', 'SF1')->first();
-            // $mulai = Carbon::parse($jam->mulai)->format('H:i:s');
-            $selesai = Carbon::parse($jam->waktu_mulai)->format('H:i:s');
-
-        if ($jamMasuk <= $selesai) {
+            $mulai = Carbon::parse($jam->waktu_mulai)->format('H:i:s');
+            $selesai = Carbon::parse($jam->waktu_selesai)->format('H:i:s');
+        
+        //SF1
+        if ($jamMasuk <= $mulai && $jamMasuk <= $selesai) {
             $status = 'Tepat Waktu';
             $photo       = $request->file('ft_selfie_in')->getClientOriginalName();
             $photo       = uniqid() . '_' . $photo;
@@ -228,6 +235,63 @@ class AbsensiController extends Controller
                         return response()->json(['result'=>$response], 200);
             }
 
+            $jam = DB::table('shifts')->where('kode', 'SF2')->first();
+            $mulai = Carbon::parse($jam->waktu_mulai)->format('H:i:s');
+            $selesai = Carbon::parse($jam->waktu_selesai)->format('H:i:s');
+        
+        //SF2    
+        if ($jamMasuk <= $mulai && $jamMasuk <= $selesai) {
+            $status = 'Tepat Waktu';
+            $photo       = $request->file('ft_selfie_in')->getClientOriginalName();
+            $photo       = uniqid() . '_' . $photo;
+            $destination = base_path() . '/public/uploads/img/absensi';
+            $request->file('ft_selfie_in')->move($destination, $photo);
+        
+            DB::table('absensi')->insert([
+                      'karyawan_id'  => $request->karyawan_id,
+                      'Tanggal'      => $tanggalMasuk,
+                      'jam_masuk'    => $jamMasuk,
+                      'jam_keluar'   => '00:00:00',
+                      'latitude'     => $request->lat,
+                      'longitude'    => $request->long,
+                      'alamat'       => $request->alamat,
+                      'lokasi'       => $request->lokasi,
+                      'catatan'      => $request->keterangan,
+                      'Keterangan'   => $status,
+                      'shift'   => 2,
+                      'ft_selfie_in' => $photo]);
+                    DB:: commit();
+                    $response=[ 'statusCode'=>200,
+                    'message' => 'Absen Berhasil',
+                    ];
+                    return response()->json(['result'=>$response], 200);
+            }else {
+                $status = 'Terlambat';
+                $photo       = $request->file('ft_selfie_in')->getClientOriginalName();
+                $photo       = uniqid() . '_' . $photo;
+                $destination = base_path() . '/public/uploads/img/absensi';
+                $request->file('ft_selfie_in')->move($destination, $photo);
+            
+                DB::table('absensi')->insert([
+                          'karyawan_id'  => $request->karyawan_id,
+                          'Tanggal'      => $tanggalMasuk,
+                          'jam_masuk'    => $jamMasuk,
+                          'jam_keluar'   => '00:00:00',
+                          'latitude'     => $request->lat,
+                          'longitude'    => $request->long,
+                          'alamat'       => $request->alamat,
+                          'lokasi'       => $request->lokasi,
+                          'catatan'      => $request->keterangan,
+                          'Keterangan'   => $status,
+                          'shift'   => 2,
+                          'ft_selfie_in' => $photo]);
+                        DB:: commit();
+                        $response=[ 'statusCode'=>200,
+                        'message' => 'Absen Berhasil',
+                        ];
+                        return response()->json(['result'=>$response], 200);
+            }
+
        
         }
 
@@ -256,25 +320,38 @@ class AbsensiController extends Controller
             return response()->json(['result'=>$response], 200);
         }
 
-     
+        $jam = DB::table('shifts')->where('kode', 'SF1')->first();
+        // $mulai = Carbon::parse($jam->mulai)->format('H:i:s');
+        $selesai = Carbon::parse($jam->waktu_selesai)->format('H:i:s');
+    
+        if ($jamKeluar >= $selesai) {
+           
         $status = '';
         $photo       = $request->file('ft_selfie_out')->getClientOriginalName();
         $photo       = uniqid() . '_' . $photo;
         $destination = base_path() . '/public/uploads/img/absensi';
         $request->file('ft_selfie_out')->move($destination, $photo);
     
-            DB:: table('absensi')
-            ->where('karyawan_id', $request->karyawan_id)
-            ->where('Tanggal', $tanggalKeluar)
-            ->update([
-              'jam_keluar'    => $jamKeluar,
-              'ft_selfie_out' => $photo]);
+                    DB:: table('absensi')
+                     ->where('karyawan_id', $request->karyawan_id)
+                     ->where('Tanggal', $tanggalKeluar)
+                     ->update([
+                    'jam_keluar'    => $jamKeluar,
+                    'ft_selfie_out' => $photo]);
 
-        $response =  [ 'statusCode'=>200,
+                     $response =  [ 'statusCode'=>200,
                     'message' => 'Absen Keluar Berhasil',
                     ];
 
-          return response()->json(['result'=>$response], 200);
+                    return response()->json(['result'=>$response], 200);
+            }else {
+                     $response=[ 'statusCode'=>500,
+                        'message' => 'Anda Belum Boleh Pulang',
+                    ];
+                    return response()->json(['result'=>$response], 200);
+            }
+
+     
 
       }
 

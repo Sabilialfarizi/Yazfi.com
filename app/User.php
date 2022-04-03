@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\Absensi;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -42,7 +43,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function jadwal()
     {
-        return $this->hasMany(Jadwal::class);
+        return $this->hasMany(Absensi::class);
     }
 
     public function customer()
