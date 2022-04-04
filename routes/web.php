@@ -53,33 +53,33 @@ Route::middleware('auth')->group(function () {
             Route::patch('admin/satuan/{satuan:id}', 'SatuanController@update')->name('satuan.update');
             // Route::patch('satuan/{satuan}/update', 'SatuanController@update');
 
-       
+
             Route::resource('unit', 'UnitController');
-     
-         
+
+
             Route::get('pembatalans/{id}', 'PembatalanUnitController@update')->name('pembatalans.update');
             Route::resource('pembatalans', 'PembatalanUnitController');
 
 
             Route::resource('warehouse', 'WarehouseController');
-         
+
 
             //ajaxcontroller
             Route::get('ajax/ajax_rekap_reinburst', 'AjaxController@ajax_rekap_reinburst');
-            
+
             Route::get('ajax/ajax_pembatalan', 'AjaxController@ajax_pembatalan');
             Route::get('ajax/ajax_listpurchase', 'AjaxController@ajax_listpurchase');
 
             Route::get('ajax/ajax_gaji', 'AjaxController@ajax_gaji');
-       
+
             Route::get('ajax/ajax_acc_reinburst', 'AjaxController@ajax_acc_reinburst');
-          
+
             Route::get('ajax/ajax_reinburst', 'AjaxController@ajax_reinburst');
 
 
             Route::get('ajax/ajax_customer', 'AjaxController@ajax_customer');
-            
-            
+
+
             Route::get('ajax/ajax_pengajuan', 'AjaxController@ajax_pengajuan');
 
 
@@ -104,10 +104,10 @@ Route::middleware('auth')->group(function () {
 
             // Route Master Barang
             Route::resource('product', 'BarangController');
- // Route Master Kategori Barang
+            // Route Master Kategori Barang
 
             Route::resource('kategori', 'KategoriController');
-        
+
             // Route Master Service
             Route::resource('service', 'ServiceController');
 
@@ -151,7 +151,7 @@ Route::middleware('auth')->group(function () {
             Route::resource('komisi', 'KomisiController');
 
             // Route Master 
-            
+
             Route::get('dokter/resign/{id}', 'DokterController@resign')->name('dokter.resign');
             Route::resource('dokter', 'DokterController');
             // Route Master Ruangan
@@ -159,7 +159,7 @@ Route::middleware('auth')->group(function () {
             Route::resource('ruangan', 'RuanganController');
 
             // Route customer
-        
+
             Route::get('customer/ajax', 'CustomerController@ajax');
             Route::resource('customer', 'CustomerController');
 
@@ -190,7 +190,9 @@ Route::middleware('auth')->group(function () {
             Route::get('/attendance/reset/{id}/{year}/{month}', 'AttendanceController@AttendanceResetYearMonth')->name('attendance.reset.year.month');
             Route::get('/attendance/update_user/{bulan}/{tahun}', 'AttendanceController@update_user')->name('attendance.update_user');
             Route::get('/attendance/search', 'AttendanceController@search')->name('attendance.search');
+
             Route::resource('attendance', 'AttendanceController');
+            Route::post('attendance/laporan', 'AttendanceController@laporan')->name('attendance.laporan');
 
             Route::resource('/setting', 'SettingController');
         });
@@ -214,7 +216,6 @@ Route::middleware('auth')->group(function () {
             Route::get('/kota', 'SprController@kota');
             Route::get('/kecamatan', 'SprController@kecamatan');
             Route::get('/desa', 'SprController@desa');
-          
         });
 
         // Route Resepsionis
@@ -287,7 +288,6 @@ Route::middleware('auth')->group(function () {
             Route::get('/nominal', 'BayarController@nominal');
             Route::post('payment/store', 'BayarController@storeBayar')->name('payment.store');
             Route::get('payment/delete/{id}', 'BayarController@hapuskonfirmasi')->name('payment.delete');
-
         });
 
         // Route HRD
@@ -300,7 +300,7 @@ Route::middleware('auth')->group(function () {
             Route::resource('pengajuan', 'PengajuanController');
             Route::get('pengajuan/pdf/{id}', 'PengajuanController@pdf')->name('pengajuan.pdf');
             Route::get('pengajuan/destroy/{id}', 'PengajuanController@destroy')->name('pengajuan.destroy');
-            
+
             Route::resource('reinburst', 'ReinburstController');
 
 
@@ -308,11 +308,11 @@ Route::middleware('auth')->group(function () {
 
 
             Route::resource('sales', 'SalesController');
-            Route::get('sales/hapus/{id}','SalesController@hapus')->name('sales.hapus');
-          
-            Route::patch('sales/update/{id}','SalesController@update')->name('sales.update');
-          
-        
+            Route::get('sales/hapus/{id}', 'SalesController@hapus')->name('sales.hapus');
+
+            Route::patch('sales/update/{id}', 'SalesController@update')->name('sales.update');
+
+
 
             Route::resource('penerimaan', 'PenerimaanController');
             Route::resource('MstKaryawan', 'MstKaryawanController');
@@ -320,7 +320,7 @@ Route::middleware('auth')->group(function () {
             Route::resource('Absensi', 'AbsensiController');
             Route::get('Absensi/detail/{id}', 'AbsensiController@detailAbsensi')->name('absensi.detail');;
             Route::get('Absensi/detail/{id}/export/{daterange}', 'AbsensiController@exportDetailAbsensi')->name('export.detailAbsensi');;
-            Route::get('Absensi/export/{daterange}','AbsensiController@exportAbsensi')->name('export.absensi');
+            Route::get('Absensi/export/{daterange}', 'AbsensiController@exportAbsensi')->name('export.absensi');
             Route::resource('jam', 'JamController');
             Route::resource('holidays', 'HolidaysController');
 
@@ -329,28 +329,28 @@ Route::middleware('auth')->group(function () {
 
 
             //pengajian
-            Route::resource('penerimaangaji','MstPenerimaanController');
-            Route::resource('potongan','MstPotonganController');
-           
-            Route::get('gaji/print/{id}','GajiController@print')->name('gaji.print');
-            
+            Route::resource('penerimaangaji', 'MstPenerimaanController');
+            Route::resource('potongan', 'MstPotonganController');
+
+            Route::get('gaji/print/{id}', 'GajiController@print')->name('gaji.print');
+
             Route::get('gaji/{id}/hapus', 'GajiController@hapus')->name('gaji.hapus');
-        
+
             Route::get('gaji/show/{id}', 'GajiController@show')->name('gaji.show');
-        
+
             Route::get('gaji/{id}/edit', 'GajiController@edit')->name('gaji.edit');
-           
-        
-            Route::post('gaji/filter','GajiController@filter')->name('gaji.filter');
-            
+
+
+            Route::post('gaji/filter', 'GajiController@filter')->name('gaji.filter');
+
             Route::resource('gaji', 'GajiController');
-    
+
             Route::get('/where/searchPegawai', 'GajiController@searchPegawai');
             Route::get('gaji/ajax', 'GajiController@ajax')->name('gaji.ajax');
 
 
-           
-        
+
+
 
             Route::resource('attendance', 'AttendanceController');
             Route::post('attendance/laporan', 'AttendanceController@laporan')->name('attendance.laporan');
@@ -434,10 +434,10 @@ Route::middleware('auth')->group(function () {
             Route::resource('tukarfaktur', 'TukarFakturController');
             Route::get('tukarfaktur/destroy/{id}', 'TukarFakturController@destroy')->name('tukarfaktur.destroy');
             Route::post('tukarfaktur/create/store', 'TukarFakturController@store')->name('tukarfaktur.create.store');
-            Route::get('/tukarfaktur/pdf/{id}','TukarFakturController@pdf')->name('tukarfaktur.pdf');
-            
-            
-            Route::get('/reinburst/pdf/{id}','ReinburstController@pdf')->name('reinburst.pdf');
+            Route::get('/tukarfaktur/pdf/{id}', 'TukarFakturController@pdf')->name('tukarfaktur.pdf');
+
+
+            Route::get('/reinburst/pdf/{id}', 'ReinburstController@pdf')->name('reinburst.pdf');
 
             Route::resource('reinburst', 'ReinburstController');
             Route::get('reinburst/destroy/{id}', 'ReinburstController@destroy')->name('reinburst.destroy');
@@ -451,7 +451,7 @@ Route::middleware('auth')->group(function () {
             Route::resource('listpurchase', 'ListPurchsaController');
             Route::resource('permissions', 'PermissionController');
 
-         
+
 
             // Route Roles
             Route::resource('roles', 'RolesController');

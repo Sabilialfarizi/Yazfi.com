@@ -11,7 +11,12 @@ class mst_karyawan extends Model
     protected $table    = 'karyawan';
 
     public function absensi()
-     {
-         return $this->hasMany(Absensi::class,'karyawan_id');
-     }
+    {
+        return $this->hasMany(Absensi::class, 'karyawan_id');
+    }
+
+    public function jabatan()
+    {
+        return $this->belongsTo(Roles::class);
+    }
 }

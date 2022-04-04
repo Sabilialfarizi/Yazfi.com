@@ -30,51 +30,67 @@
                                 @for($i = 0; $i < Carbon\Carbon::parse($month)->endOfMonth()->format('d');$i++)
                                     <th>{{ Carbon\Carbon::parse($month)->startOfMonth()->addDay($i)->format('d') }}</th>
                                     @endfor
-                                <th>terlambat</th>
-                               <th>absen</th>
+                                    <th>Terlambat</th>
+                                    <th>Tidak Hadir</th>
+                                    <th>Hadir</th>
                             </tr>
                         </thead>
                         @php
                         $array_absen = [];
                         $array_telat = [];
+                        $array_tidakhadir = [];
                         @endphp
                         <tbody>
                             @foreach($user as $pegawai)
                             @php
                             $absen = 0;
                             $telat = 0;
+                            $tidakhadir = 0;
+                            $libur = 0;
+                            $full = 0;
                             @endphp
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <th>{{ $pegawai->name }}
+                                <th class="text-center">{{ $pegawai->name }}
+                                    <br>
+                                    <span class="custom-badge status-blue" style="font-size:10px;">{{ $pegawai->jabatan->key }}</span>
                                 </th>
-                                
+
                                 @for($i = 0 ;$i < Carbon\Carbon::parse($month)->endOfMonth()->format('d');$i++)
-                                    <td>{{ $pegawai->absensi->where('tanggal', Carbon\Carbon::parse($month)->startOfMonth()->addDay($i)->format('Y-m-d'))->first()->jam_masuk ?? '' }}
+                                    <td class="text-center">{{ $pegawai->absensi->where('tanggal', Carbon\Carbon::parse($month)->startOfMonth()->addDay($i)->format('Y-m-d'))->first()->shift->kode ?? '' }}
                                         <br>
-                                        {{ $pegawai->absensi->where('tanggal', Carbon\Carbon::parse($month)->startOfMonth()->addDay($i)->format('Y-m-d'))->first()->jam_keluar ?? '' }}
-                                        {{-- @foreach($holiday as $list)
-                                        @if(Carbon\Carbon::parse($list->holiday_date)->format('d') == $i)
-                                        <span style="color: red;">{{ $list->title }}</span>
-                                        @endif
-                                        @endforeach --}}
+                                        {{ $pegawai->absensi->where('tanggal', Carbon\Carbon::parse($month)->startOfMonth()->addDay($i)->format('Y-m-d'))->first()->jam_masuk ?? '' }}
+                                        <a style="color: red;"> {{ $holiday->where('holiday_date',Carbon\Carbon::parse($month)->startOfMonth()->addDay($i)->format('Y-m-d'))->first()->title ?? '' }}</a>
                                     </td>
                                     @php
                                     if($pegawai->absensi->where('tanggal', Carbon\Carbon::parse($month)->startOfMonth()->addDay($i)->format('Y-m-d'))->first()->jam_masuk ?? false){
                                     $absen += 1;
                                     }
+                                    if($pegawai->absensi->where('tanggal', Carbon\Carbon::parse($month)->startOfMonth()->addDay($i)->format('Y-m-d'))->first()->jam_masuk ?? true){
+                                    $full += 1;
+                                    }
                                     if($pegawai->absensi->where('tanggal', Carbon\Carbon::parse($month)->startOfMonth()->addDay($i)->format('Y-m-d'))->first()){
-                                    if($pegawai->absensi->where('tanggal', Carbon\Carbon::parse($month)->startOfMonth()->addDay($i)->format('Y-m-d'))->first()->jam_masuk >= \App\Jam::where('kode', 'SF1')->first()->selesai){
+                                    if($pegawai->absensi->where('keterangan', 'Terlambat')->first()){
                                     $telat += 1;
                                     }
                                     }
+
+                                    if($pegawai->absensi->where('tanggal', Carbon\Carbon::now()->startOfMonth()->addDay($i)->format('Y-m-d'))->first() == null){
+                                    $tidakhadir += 1;
+                                    }
+                                    if($holiday->where('holiday_date',Carbon\Carbon::parse($month)->startOfMonth()->addDay($i)->format('Y-m-d'))->first()->title ?? false){
+                                    $libur += 1;
+                                    }
+
                                     @endphp
                                     @endfor
-                                    <td>{{ $telat }}</td>
-                                    <td>{{ $absen }}</td>
+                                    <td style="color:red;">{{ $telat }}</td>
+                                    <td>{{ $tidakhadir }}</td>
+                                    <td style="color:green;">{{ $absen }}</td>
                                     @php
                                     array_push($array_absen, $absen);
                                     array_push($array_telat, $telat);
+                                    array_push($array_tidakhadir, $tidakhadir );
                                     @endphp
 
                             </tr>
@@ -83,8 +99,9 @@
                         <tfoot>
                             <tr>
                                 <td colspan="{{ 2 + Carbon\Carbon::parse($month)->lastOfMonth()->format('d') }}"></td>
-                                <td>{{ array_sum($array_telat) }}</td>
-                                <td>{{ array_sum($array_absen) }}</td>
+                                <td style="color:red;">{{ array_sum($array_telat) }}</td>
+                                <td>{{ array_sum($array_tidakhadir) }}</td>
+                                <td style="color:green;">{{ array_sum($array_absen) }}</td>
                             </tr>
                         </tfoot>
                     </table>
