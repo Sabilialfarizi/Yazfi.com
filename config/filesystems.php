@@ -45,15 +45,22 @@ return [
 
         'local' => [
             'driver' => 'local',
-            'root' => storage_path('app'),
+             'root' => public_path(),
+           
         ],
 
-        'public' => [
+       
+        'public_html' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => env('APP_URL') . '/storage',
+            'root' => public_path(),
             'visibility' => 'public',
         ],
+        
+        'excel_store' => [
+            'driver' => 'local',
+            'root' => '/www/wwwroot/siap.partaihanura.or.id/uploads/kta',
+        ],
+
 
         's3' => [
             'driver' => 's3',
@@ -78,8 +85,9 @@ return [
     |
     */
 
-    'links' => [
-        public_path('storage') => storage_path('app/public'),
-    ],
+    // 'links' => [
+    //     public_path('storage') => storage_path('app/public'),
+    //     public_path('image') => storage_path('app/images'),
+    // ],
 
 ];

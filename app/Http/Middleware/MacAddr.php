@@ -2,10 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use App\User;
+use App\{User, DetailUsers};
 use Closure;
 use Illuminate\Support\Facades\Auth;
-use phpDocumentor\Reflection\Types\Null_;
+
 
 class MacAddr
 {
@@ -18,18 +18,21 @@ class MacAddr
      */
     public function handle($request, Closure $next)
     {
-        $macAddr = substr(exec('getmac'), 0, 17);
-
-        if (Auth::user()->is_verified == 'pending') {
-            $user = User::find(Auth::user()->id);
-            $user->update([
-                'is_verified' => 'verified',
-                'mac_address' => $macAddr
-            ]);
-            return $next($request);
+        
+         $user = User::find(Auth::user()->id);
+         $detail = DetailUsers::leftJoin('model_has_roles','detail_users.userid','=','model_has_roles.model_id')
+            ->where('detail_users.userid',$user->id)
+            ->where('detail_users.status_kta', 1)
+            ->select('model_has_roles.role_id','detail_users.no_member','detail_users.nickname','detail_users.nik')
+            ->first();
+        if (! $detail ){
+             Auth::logout();
+             return back();
         }
-
-        if (Auth::user()->mac_address == $macAddr) {
+     
+   
+        if ( $detail->role_id != 5 ) {
+            
             return $next($request);
         }
 

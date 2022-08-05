@@ -17,19 +17,20 @@
 @endif
 
 <form method="POST" action="{{ route('update.profile') }}" enctype="multipart/form-data">
-    @csrf
+@csrf
     <div class="card-box">
         <h3 class="card-title">Informations</h3>
         <div class="row">
             <div class="col-md-12">
                 <div class="profile-img-wrap">
-                    <img class="inline-block" src="{{ asset('/storage/' . $profile->image) }}" alt="user">
+                <img class="rounded-circle" src="{{ asset('/uploads/img/users/' . auth()->user()->image ) }}" width="80px" height="30px">
                     <div class="fileupload btn">
                         <span class="btn-text">edit</span>
-                        <input class="upload" type="file" name="image">
+                        <input class="upload" type="file" name="image" id="image">
                     </div>
                 </div>
                 <div class="profile-basic">
+                        <input type="text" hidden name="image_lama" value="{{ $profile->image ?? '' }}">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group form-focus focused">
@@ -54,6 +55,7 @@
                             <div class="form-group form-focus focused">
                                 <label class="focus-label">Password</label>
                                 <input type="password" name="password" class="form-control floating">
+                             
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -69,7 +71,7 @@
         </div>
     </div>
     <div class="text-center m-t-20">
-        <button class="btn btn-primary submit-btn" type="submit">Save</button>
+        <button class="btn submit-btn"style="background-color:#D6A62C; color:#FFFF;"  type="submit">Save</button>
     </div>
 </form>
 @stop

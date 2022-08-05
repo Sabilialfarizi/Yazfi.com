@@ -35,7 +35,7 @@ class AppointmentController extends Controller
         $appointment = Booking::with('pasien', 'dokter', 'cabang', 'perawat', 'resepsionis', 'rincian', 'tindakan')->where('id', $appointment->id)->first();
         $payments = Payment::where('id', '!=', 4)->get();
 
-        return view('appointments.show', compact('appointment', 'payments',));
+        return view('appointments.show', compact('appointment', 'payments'));
     }
 
     public function edit(Booking $booking)

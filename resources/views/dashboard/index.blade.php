@@ -6,35 +6,21 @@
 @include('dashboard._super-admin')
 @endrole
 
-@role('resepsionis')
-<x-resepsionis._resepsionis :jadwal="$jadwal" :datang="$datang" :pasien="$pasien" :appointments="$appointments" :tindakan="$tindakan" :periksa="$periksa"></x-resepsionis._resepsionis>
-@endrole
 
-{{-- @role('dokter')
-@include('dokter.dashboard')
-@endrole --}}
-
-@role('marketing')
-@include('marketing.dashboard/index')
+@role('dpc')
+@include('dpc.dashboard')
 @endrole
-
-@role('supervisor')
-
+@role('dpp')
+@include('dpp.dashboard')
 @endrole
-@role('hrd')
-@include('hrd.dashboard')
-@endrole
-@role('logistik')
-@include('logistik.dashboard')
-@endrole
-@role('purchasing')
-@include('purchasing.dashboard')
+@role('dpd')
+@include('dpd.dashboard')
 @endrole
 
 
 @stop
 
-@role('resepsionis')
+
 @section('footer')
 <link rel=" stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css" integrity="sha512-O03ntXoVqaGUTAeAmvQ2YSzkCvclZEcPQu1eqloPaHfJ5RuNGiS4l+3duaidD801P50J28EHyonCV06CUlTSag==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js" integrity="sha512-Zq9o+E00xhhR/7vJ49mxFNJ0KQw1E1TMWkPTxrWcnpfEFDEXgUiwJHIKit93EW/XxE31HSI5GEOW06G6BF1AtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -73,4 +59,3 @@
 </script>
 @endif
 @stop
-@endrole

@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Jabatan extends Model
 {
-    protected $guarded = ['id'];
-    public function perusahaan()
+      public $table = 'jabatans';
+   
+
+
+    public static function getJabatan($value)
     {
-        return  $this->belongsTo(Perusahaan::class, 'id_perusahaan');
+        return Jabatan::where('kode', $value)->select('nama')->first();
     }
 }

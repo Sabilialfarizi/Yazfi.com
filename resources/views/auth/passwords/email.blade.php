@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Reset Password') }}</div>
+                <div <a style="background-color:#D6A62C; color:#FFFF;" class="card-header">{{ __('Reset Password') }}</div>
 
                 <div class="card-body">
                     @if (session('status'))
@@ -38,6 +38,10 @@
                                 </button>
                             </div>
                         </div>
+                        <br>
+                         <div class="modal-footer">
+                        <a href="/" class="btn btn-link">{{ __('Kembali') }}</a>
+                    </div>
                     </form>
                 </div>
             </div>

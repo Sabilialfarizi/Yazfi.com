@@ -41,6 +41,7 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
+// $app->bind('path.public', function() { return '/www/wwwroot/hanura.net'; });
 /*
 |--------------------------------------------------------------------------
 | Return The Application

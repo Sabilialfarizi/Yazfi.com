@@ -7,13 +7,13 @@
                         <ul class="list-unstyled">
                             <li>
                                 <div class="form-group">
-                                    <label for="name">Nama</label>
-                                    <input type="text" name="name" id="name" class="form-control" required=""
-                                        value="{{ $user ? $user->name : '' }}">
+                                      <label for="name">Nama <span style="color: red">*</span></label>
+                                    <input type="text" name="name" id="name" class="form-control" 
+                                        value="{{ $user ? $user->name : '' }}" required="">
 
-                                    @error('name')
-                                    <small class="text-danger">{{ $message }}</small>
-                                    @enderror
+                                    <!--@error('name')-->
+                                    <!--<small class="text-danger">{{ $message }}</small>-->
+                                    <!--@enderror-->
                                 </div>
                             </li>
                         </ul>
@@ -22,29 +22,13 @@
                         <ul class="list-unstyled">
                             <li>
                                 <div class="form-group">
-                                    <label for="nik">NIP</label>
-                                    <input type="text" name="nip" id="nip" value="{{ $nourut }}" required=""
-                                        class="form-control">
+                                     <label for="no_ktp">No. KTP <span style="color: red">*</span></label>
+                                    <input type="text" name="no_ktp" id="no_ktp"  maxlength="16"
+                                        minlength="16" class="form-control" value="{{ $user ? $user->no_ktp : '' }}" required="">
 
-                                    @error('nik')
-                                    <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="col-sm-6 col-sg-4 m-b-4">
-                        <ul class="list-unstyled">
-                            <li>
-                                <div class="form-group">
-                                    <label for="no">No. KTP</label>
-                                    <input type="text" name="no_ktp" id="no_ktp" required="" maxlength="16"
-                                        minlength="16" class="form-control" value="{{ $user ? $user->no_ktp : '' }}">
-
-                                    @error('no_ktp')
-                                    <small class="text-danger">{{ $message }}</small>
-                                    @enderror
+                                    <!--@error('no_ktp')-->
+                                    <!--<small class="text-danger">{{ $message }}</small>-->
+                                    <!--@enderror-->
                                 </div>
                             </li>
                         </ul>
@@ -54,13 +38,13 @@
                         <ul class="list-unstyled">
                             <li>
                                 <div class="form-group">
-                                    <label for="email">Email</label>
-                                    <input type="email" name="email" required="" id="email" class="form-control"
-                                        value="{{ $user ? $user->email : '' }}">
+                                    <label for="email">Email <span style="color: red">*</span></label>
+                                    <input type="email" name="email" id="email" class="form-control"
+                                        value="{{ $user ? $user->email : '' }}" required="">
 
-                                    @error('email')
-                                    <small class="text-danger">{{ $message }}</small>
-                                    @enderror
+                                    <!--@error('email')-->
+                                    <!--<small class="text-danger">{{ $message }}</small>-->
+                                    <!--@enderror-->
                                 </div>
                             </li>
                         </ul>
@@ -70,14 +54,14 @@
                         <ul class="list-unstyled">
                             <li>
                                 <div class="form-group">
-                                    <label for="phone_number">No Telp.</label>
-                                    <input type="text" name="phone_number" id="phone_number" required=""
+                                    <label for="phone_number">No. Telp. <span style="color: red">*</span></label>
+                                    <input type="text" name="phone_number" required="" id="phone_number" 
                                         class="form-control" maxlength="12" minlength="12"
                                         value="{{ $user ? $user->phone_number : '' }}">
 
-                                    @error('phone_number')
-                                    <small class="text-danger">{{ $message }}</small>
-                                    @enderror
+                                    <!--@error('phone_number')-->
+                                    <!--<small class="text-danger">{{ $message }}</small>-->
+                                    <!--@enderror-->
                                 </div>
                             </li>
                         </ul>
@@ -87,9 +71,9 @@
                         <ul class="list-unstyled">
                             <li>
                                 <div class="form-group">
-                                    <label for="jabatan">Agama</label>
+                                    <label for="id_agamas">Agama <span style="color: red">*</span></label>
                                     <select name="id_agamas" required="" id="id_agamas" class="form-control">
-                                        <option disabled selected>-- Select Agama --</option>
+                                        <option value="">-- Select Agama --</option>
                                         @foreach($agamas as $agama)
                                         <option {{ $user->id_agamas == $agama->id ? 'selected' : '' }}
                                             value="{{ $agama->id }}">
@@ -97,9 +81,9 @@
                                         @endforeach
                                     </select>
 
-                                    @error('id_agamas')
-                                    <small class="text-danger">{{ $message }}</small>
-                                    @enderror
+                                    <!--@error('id_agamas')-->
+                                    <!--<small class="text-danger">{{ $message }}</small>-->
+                                    <!--@enderror-->
                                 </div>
                             </li>
                         </ul>
@@ -109,8 +93,8 @@
                         <ul class="list-unstyled">
                             <li>
                                 <div class="form-group">
-                                    <label for="role">Divisi </label>
-                                    <select name="role[]" id="roles" class="form-control select2" multiple="multiple">
+                                    <label for="role">Divisi <span style="color: red">*</span></label>
+                                    <select name="role[]" id="roles" class="form-control select2" required="" multiple="multiple">
                                         @foreach($user->roles as $rol)
                                         <option selected value="{{ $rol->id }}">{{ $rol->key }}</option>
                                         @endforeach
@@ -119,9 +103,9 @@
                                         @endforeach
                                     </select>
 
-                                    @error('role')
-                                    <small class="text-danger">{{ $message }}</small>
-                                    @enderror
+                                    <!--@error('role')-->
+                                    <!--<small class="text-danger">{{ $message }}</small>-->
+                                    <!--@enderror-->
                                 </div>
                             </li>
                         </ul>
@@ -131,9 +115,9 @@
                         <ul class="list-unstyled">
                             <li>
                                 <div class="form-group">
-                                    <label for="jabatan">Jabatan</label>
-                                    <select name="id_jabatans" id="jabatan" class="form-control">
-                                        <option disabled selected>-- Select Jabatan --</option>
+                                    <label for="id_jabatans">Jabatan <span style="color: red">*</span></label>
+                                    <select name="id_jabatans" required="" id="id_jabatans" class="form-control">
+                                        <option value="">-- Select Jabatan --</option>
                                         @foreach($jabatans as $jabatan)
                                         <option {{ $user->id_jabatans == $jabatan->id ? 'selected' : '' }}
                                             value="{{ $jabatan->id }}">
@@ -141,25 +125,48 @@
                                         @endforeach
                                     </select>
 
-                                    @error('id_jabatan')
-                                    <small class="text-danger">{{ $message }}</small>
-                                    @enderror
+                                    <!--@error('id_jabatans')-->
+                                    <!--<small class="text-danger">{{ $message }}</small>-->
+                                    <!--@enderror-->
                                 </div>
 
                             </li>
                         </ul>
                     </div>
+                   
+
                     <div class="col-sm-6 col-sg-4 m-b-4">
+                        <ul class="list-unstyled">
+                            <li>
+                                <div class="form-group">
+                                    <label for="jabatan">Status Pribadi <span style="color: red">*</span></label>
+                                    <select name="id_pernikahan" required="" id="id_pernikahan" class="form-control">
+                                        <option value="">-- Select Pribadi --</option>
+                                        @foreach($perkawinans as $perkawinan)
+                                        <option {{ $user->id_pernikahan == $perkawinan->id ? 'selected' : '' }}
+                                            value="{{ $perkawinan->id }}">
+                                            {{ $perkawinan->nama }}</option>
+                                        @endforeach
+                                    </select>
+
+                                    <!--@error('id_pernikahan')-->
+                                    <!--<small class="text-danger">{{ $message }}</small>-->
+                                    <!--@enderror-->
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                     <div class="col-sm-6 col-sg-4 m-b-4">
                         <ul class="list-unstyled">
                             <li>
                                 <div class="form-group">
                                     <label class="form-control-label" for="jk">Jenis
                                         Kelamin<span class="small text-danger">*</span>
                                     </label>
-                                    <select id="jk" class="form-control" name="jk">
-                                        <option disabled selected>-- Select Jenis Kelamin --</option>
+                                    <select id="jk" class="form-control" name="jk" required="">
+                                        <option value="">-- Select Jenis Kelamin --</option>
                                         @foreach($jk as $jk_kelamin)
-                                        <option {{ $user->jenis_kelamin == $jk_kelamin->key_gender ? 'selected' : '' }}
+                                        <option 
                                             value="{{ $jk_kelamin->key_gender }}">
                                             {{ $jk_kelamin->name }}</option>
                                         @endforeach
@@ -183,10 +190,7 @@
                                         Lahir<span class="small text-danger">*</span>
                                     </label>
                                     <input type="date" id="tgl_lahir" class="form-control" name="tgl_lahir"
-                                        placeholder="Tanggal Lahir" required="" value="{{old('tgl_lahir')}}">
-                                    <div class="input-group-addon">
-                                        <span class="glyphicon glyphicon-th"></span>
-                                    </div>
+                                        placeholder="Tanggal Lahir" required=""  required="">
 
                                     @error('tgl_lahir')
                                     <span class="invalid-feedback" role="alert">
@@ -203,32 +207,9 @@
                         <ul class="list-unstyled">
                             <li>
                                 <div class="form-group">
-                                    <label for="jabatan">Status Pribadi</label>
-                                    <select name="id_pernikahan" required="" id="id_pernikahan" class="form-control">
-                                        <option disabled selected>-- Select Pribadi --</option>
-                                        @foreach($perkawinans as $perkawinan)
-                                        <option {{ $user->id_pernikahan == $perkawinan->id ? 'selected' : '' }}
-                                            value="{{ $perkawinan->id }}">
-                                            {{ $perkawinan->nama }}</option>
-                                        @endforeach
-                                    </select>
-
-                                    @error('id_pernikahan')
-                                    <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="col-sm-6 col-sg-4 m-b-4">
-                        <ul class="list-unstyled">
-                            <li>
-                                <div class="form-group">
-                                    <label for="perusahaan">Perusahaan</label>
-                                    <select name="id_perusahaan" id="perusahaan" class="form-control input-lg dynamic"
-                                        data-dependent="nama_project">
-                                        <option disabled selected>-- Select Perusahaan --</option>
+                                    <label for="id_perusahaan">Perusahaan <span style="color: red">*</span></label>
+                                    <select name="id_perusahaan" id="id_perusahaan" class="form-control select2" required="">
+                                        <option value="">-- Select Perusahaan --</option>
                                         @foreach($perusahaans as $perusahaan)
                                         <option {{ $user->id_perusahaan == $perusahaan->id ? 'selected' : '' }}
                                             value="{{ $perusahaan->id }}">
@@ -236,7 +217,21 @@
                                         @endforeach
                                     </select>
 
-                                    @error('id_jabatan')
+                                    <!--@error('id_perusahaan')-->
+                                    <!--<small class="text-danger">{{ $message }}</small>-->
+                                    <!--@enderror-->
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-6 col-sg-4 m-b-4">
+                        <ul class="list-unstyled">
+                            <li>
+                                <div class="form-group">
+                                    <label for="password">Password <span style="color: red">*</span></label>
+                                    <input type="password" name="password" id="password" 
+                                        class="form-control" required="">
+                                    @error('password')
                                     <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </div>
@@ -247,19 +242,11 @@
                         <ul class="list-unstyled">
                             <li>
                                 <div class="form-group">
-                                    <label for="password">Password</label>
-                                    <input type="password" name="password" id="password" required=""
-                                        class="form-control">
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-sm-6 col-sg-4 m-b-4">
-                        <ul class="list-unstyled">
-                            <li>
-                                <div class="form-group">
-                                    <label for="image">Image Profile</label><br>
-                                    <input type="file" class="form-control" name="image" id="image">
+                                   <label for="password">Image Profile <span style="color: red">*</span></label>
+                                    <input type="file" class="form-control" required="" name="image" id="image">
+                                     <label style="font-size:12px; "for="password"> <i class="fa-solid fa-triangle-exclamation"></i> jpg/jpeg/png</label>
+                                     
+                              
                                 </div>
                             </li>
                         </ul>
@@ -271,13 +258,11 @@
                             <li>
 
                                 <div class="form-group">
-                                    <label for="tanggal">Tanggal Masuk<span style="color: red">*</span></label>
-                                    <input type="datetime-local" name="created_at" id="created_at"
-                                        value="{{Carbon\Carbon::parse( $user ? $user->created_at : '')->format('Y-m-d').'T'.Carbon\Carbon::parse($user ? $user->created_at : '')->format('H:i:s')}}"
-                                        class=" form-control">
-                                    @error('tanggal')
-                                    <small class="text-danger">{{ $message }}</small>
-                                    @enderror
+                                    <label for="created_at">Tanggal Masuk<span style="color: red">*</span></label>
+                                    <input type="date" name="created_at" id="created_at"
+                                        value="{{Carbon\Carbon::parse( $user ? $user->created_at : '')->format('Y-m-d')}}"
+                                        class=" form-control" required="">
+                                  
                                 </div>
                             </li>
                         </ul>
@@ -288,9 +273,9 @@
                         <ul class="list-unstyled">
                             <li>
                                 <div class="form-group">
-                                    <label for="address">Alamat</label>
+                                    <label for="address">Alamat <span style="color: red">*</span></label>
                                     <textarea name="address" id="address" rows="4"
-                                        class="form-control">{{ $user->address }}</textarea>
+                                        class="form-control" required>{{ $user->address }} </textarea>
 
                                     @error('address')
                                     <small class="text-danger">{{ $message }}</small>
@@ -300,16 +285,27 @@
                             </li>
                         </ul>
                     </div>
-
-                    <div class="col-sm-10 offset-sm-20">
-                        <button type="submit" class="btn btn-primary submit-btn"><i class="fa fa-save"></i>
-                            Save</button>
+                </div>
+                
+                <div class="modal-footer">
+                    <a href="{{ route('hrd.users.index') }}" class="btn btn-link">{{ __('Kembali') }}</a>
+                    <button type="submit" class="btn btn-primary">{{ __('Simpan') }}</button>
+                </div>
+        <div class="row">
+                    <div class="col-sm-6 col-sg-4 m-b-4">
+                        <ul class="list-unstyled">
+                            <li>
+                                <div class="form-group">
+                                      <label for="name"><span style="color: red">(*) Data wajib diisi</span></label>
+                        
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
     </html>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script>
@@ -319,7 +315,7 @@
                 var div = $(this).parent();
                 var op = "";
                 $.ajax({
-                    url: `/hrd/where/project`,
+                    url: `/user/where/project`,
                     method: "get",
                     data: {
                         'id': id
